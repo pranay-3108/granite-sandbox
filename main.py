@@ -10,7 +10,11 @@ reader = PdfReader(pdf_file)
 text = ""
 
 for page in reader.pages:
-    text += page.extract_text()
+
+    extracted = page.extract_text()
+
+    if extracted:
+        text += extracted
 
 prompt = f"""
 Extract only technical skills from this resume.
@@ -46,4 +50,4 @@ answer = response["message"]["content"]
 print(answer)
 
 print(f"\ntook {round(time.time() - start, 2)}s")
-print(f"peak memory: {round(peak / 1024 / 1024, 2)} MB")
+print(f"python memory: {round(peak / 1024 / 1024, 2)} MB")
