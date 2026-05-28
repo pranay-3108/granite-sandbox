@@ -1,145 +1,82 @@
 # Granite Sandbox
 
-Started as a small experiment with local Document AI using IBM Granite 3.3 + Ollama.
+Small local AI experiments with IBM Granite models through Ollama.
 
-At first the goal was simple:
-extract useful information from PDFs locally without relying on cloud APIs.
+This repo focuses on a simple question:
 
-But after multiple experiments, the interesting part became the system behavior itself.
+Can a lightweight local pipeline extract useful information from a PDF without cloud APIs, and how much does runtime improve after a few practical iterations?
 
-Things like:
-- why cold-start latency becomes huge
-- how prompt structure changes runtime
-- why semantic chunking works better than blind slicing
-- how lightweight pipelines behave on consumer hardware
+## What This Project Does
 
-This sandbox is now focused more on understanding lightweight local AI systems than just PDF extraction.
+- reads a PDF resume with `PyPDF2`
+- runs local inference with `granite3.3:2b` through Ollama
+- extracts technical skills from the document
+- tracks how runtime changes across prompt and pipeline changes
 
----
+## Why I Built It
 
-# Current Experiments
+This is not meant to be a polished product demo.
 
-## Experiment #1 — Cold Start Pipeline
+It is a small student experiment for understanding how local LLM pipelines behave on normal hardware:
 
-Initial whole-document inference pipeline.
+- cold start vs warm runs
+- heavier prompts vs lean prompts
+- simple extraction pipelines vs unnecessary complexity
 
-Observed:
-- very high latency
-- unstable runtime behavior
-- unnecessary prompt overhead
+## Benchmark
 
-Result:
-~133s local CPU runtime.
+Baseline pipeline:
 
----
+- total pipeline time: `133.69s`
 
-## Experiment #2 — Lean Prompt + Warmup
+Iterated version:
 
-Reduced prompt complexity and added warm-cache execution.
+- total pipeline time: `10.65s`
 
-Observed:
-- major latency reduction
-- more stable inference
-- cleaner outputs
+README image used for the public comparison:
 
-Result:
-~14s runtime.
+![Benchmark](benchmark_exp.png)
 
----
+## What Changed Between Runs
 
-## Experiment #3 — Semantic Chunking + Hot Cache
+- simplified prompting
+- reduced overhead in the pipeline
+- improved chunk handling in later experiments
 
-Moved from aggressive filtering to sentence-aware chunking.
+## Example Run
 
-Observed:
-- better context preservation
-- cleaner aggregation
-- faster runtime behavior
+```bash
+python main.py
+```
 
-Result:
-~10.65s runtime across repeated runs.
+## Example Output
 
----
-
-# Pipeline
-
-PDF
-↓
-PyPDF2 extraction
-↓
-cleaning + chunking
-↓
-local Granite inference
-↓
-Python-side cleanup
-↓
-final structured summary
-
----
-
-# Benchmark Results
-
-| Experiment | Runtime |
-|---|---|
-| Cold Start | 133.69s |
-| Warmup + Lean Prompt | 14.37s |
-| Hot Cache + Semantic Chunking | 10.65s |
-
----
-
-# Example Output
-
-## Technical Skills
+```text
 - Python
-- PyTorch
-- CNN
 - SQL
+- PyTorch
+- Git
+- REST APIs
 
-## Projects
-- Chest X-ray Segmentation
-- Chessboard State Recognition
+took 13.96s
+```
 
----
+## Requirements
 
-# Tool Decisions
+```text
+PyPDF2
+ollama
+```
 
-## Why PyPDF2?
-Simple and lightweight for current text extraction experiments.
-
-More complex frameworks added unnecessary overhead for this stage.
-
----
-
-## Why Not Strict JSON?
-Strict JSON formatting increased reasoning overhead on small local models.
-
-Lightweight structured text was faster and easier to clean using Python.
-
----
-
-## Why Python-side Cleanup?
-Simple deterministic operations like:
-- regex
-- ordered deduplication
-- filtering
-
-are cheaper and faster than forcing the model to handle everything itself.
-
----
-
-# What Was Observed
-
-- warm-cache inference drastically reduced latency
-- prompt complexity heavily affected runtime
-- semantic chunking preserved context better than blind slicing
-- Python memory usage stayed tiny
-- runtime engine behavior mattered more than Python-side orchestration
-
----
-
-# How To Run
-
-## Install Requirements
+## Install
 
 ```bash
 pip install -r requirements.txt
+ollama pull granite3.3:2b
+```
+
+## Notes
+
+- the repo is intentionally small
+- the goal is experimentation, not fake production scope
+- future work is mostly around better benchmarking and broader document tests
