@@ -1,22 +1,25 @@
-from PyPDF2 import PdfReader
-import ollama
 import time
-import tracemalloc
 
-pdf_file = "sample_resume.pdf"
+import ollama
+from PyPDF2 import PdfReader
 
-reader = PdfReader(pdf_file)
 
-text = ""
+PDF_FILE = "sample_resume.pdf"
+MODEL = "granite3.3:2b"
 
-for page in reader.pages:
 
-    extracted = page.extract_text()
+def extract_text(pdf_file):
+    reader = PdfReader(pdf_file)
+    text = []
+    for page in reader.pages:
+        page_text = page.extract_text()
+        if page_text:
+            text.append(page_text.strip())
+    return "\n".join(text)
 
-    if extracted:
-        text += extracted
 
-prompt = f"""
+def run_model(text):
+    prompt = f"""
 Extract only technical skills from this resume.
 
 Return short bullet points.
@@ -25,29 +28,24 @@ Resume:
 {text}
 """
 
-tracemalloc.start()
+    response = ollama.chat(
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return response["message"]["content"]
 
-start = time.time()
 
-print("running model...\n")
+def main():
+    text = extract_text(PDF_FILE)
 
-response = ollama.chat(
-    model="granite3.3:2b",
-    messages=[
-        {
-            "role": "user",
-            "content": prompt
-        }
-    ]
-)
+    start = time.time()
+    print("running model...\n")
 
-current, peak = tracemalloc.get_traced_memory()
+    answer = run_model(text)
 
-tracemalloc.stop()
+    print(answer)
+    print(f"\ntook {round(time.time() - start, 2)}s")
 
-answer = response["message"]["content"]
 
-print(answer)
-
-print(f"\ntook {round(time.time() - start, 2)}s")
-print(f"python memory: {round(peak / 1024 / 1024, 2)} MB")
+if __name__ == "__main__":
+    main()
