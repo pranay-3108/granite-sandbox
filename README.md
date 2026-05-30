@@ -5,6 +5,14 @@ Small local AI experiments with IBM Granite models through Ollama.
 This repo focuses on a simple question:
 
 Can a lightweight local pipeline extract useful information from a PDF without cloud APIs, and how much does runtime improve after a few practical iterations?
+## Why this project matters
+
+Many students, researchers, and independent builders do not have access to expensive cloud AI services or high-end hardware.
+
+At the same time, technical documents, research papers, and reports often contain important details that can be missed by simple extraction methods.
+
+This project focuses on understanding how lightweight local AI systems can process these documents more effectively while remaining practical to run on everyday hardware.
+
 
 ## What This Project Does
 
