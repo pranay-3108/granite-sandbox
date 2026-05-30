@@ -92,3 +92,14 @@ ollama pull granite3.3:2b
 - the repo is intentionally small
 - the goal is experimentation, not fake production scope
 - future work is mostly around better benchmarking and broader document tests
+#### Future Work
+
+* OCR support
+* Layout-aware chunking
+* Better handling of research papers
+* Reduce memory usage
+* Push overall pipeline runtime below 10 seconds
+* Test additional local models
+* Benchmark across different hardware
+* Improve output consistency
+
