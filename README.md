@@ -22,6 +22,10 @@ It is a small student experiment for understanding how local LLM pipelines behav
 - cold start vs warm runs
 - heavier prompts vs lean prompts
 - simple extraction pipelines vs unnecessary complexity
+## Who is this for?
+# community
+
+Granite Sandbox explores how local AI systems can improve document understanding on everyday hardware. The project is aimed at students, independent researchers, and anyone working with limited compute resources who may not have access to expensive cloud-based AI services
 
 ## Benchmark
 
